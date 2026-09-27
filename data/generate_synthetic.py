@@ -105,7 +105,7 @@ def generate(n_customers: int, seed: int, out_dir: Path) -> None:
     # --- call centre ------------------------------------------------------
     n_calls = rng.poisson(0.9 + 1.5 * np.clip(intent, 0, None) + 1.0 * (arrears_days > 0), n_customers)
     call_rows = []
-    for cid, k, ch, arr in zip(ids, n_calls, churned, arrears_days):
+    for cid, k, ch, arr in zip(ids, n_calls, churned, arrears_days, strict=True):
         for _ in range(k):
             if ch and rng.random() < 0.35:
                 reason = rng.choice(["rate_query", "payoff_quote", "complaint"], p=[0.45, 0.35, 0.20])

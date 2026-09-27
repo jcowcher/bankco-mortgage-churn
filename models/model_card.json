@@ -1,0 +1,51 @@
+{
+  "model": "churn_propensity",
+  "version": "20260927012102",
+  "trained_at": "2026-09-27T01:21:02+00:00",
+  "git_sha": "ce137dd",
+  "training_data_hash": "5de834fcf938",
+  "n_train": 14000,
+  "n_test": 6000,
+  "churn_rate": 0.0206,
+  "features": [
+    "rate_gap",
+    "months_to_fixed_expiry",
+    "near_expiry",
+    "is_fixed",
+    "ltv",
+    "balance",
+    "arrears_days",
+    "remaining_term_months",
+    "age",
+    "tenure_years",
+    "products_held",
+    "annual_income",
+    "has_salary_account",
+    "logins_12m",
+    "rate_page_views_12m",
+    "rate_page_views_3m",
+    "payoff_quote_requests_12m",
+    "competitor_compare_clicks_12m",
+    "calls_12m",
+    "rate_query_calls",
+    "payoff_quote_calls",
+    "complaints_12m",
+    "avg_sentiment",
+    "min_sentiment"
+  ],
+  "metrics": {
+    "auc": 0.9221916928347131,
+    "average_precision": 0.6762753168221154,
+    "top_decile_lift": 7.903225806451613
+  },
+  "baseline_metrics": {
+    "auc": 0.762051483343947,
+    "average_precision": 0.10710547212789359,
+    "top_decile_lift": 3.9516129032258065
+  },
+  "acceptance": {
+    "min_auc_lift_over_baseline": 0.05,
+    "min_top_decile_lift": 2.0,
+    "accepted": true
+  }
+}

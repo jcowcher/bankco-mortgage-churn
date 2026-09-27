@@ -38,14 +38,35 @@ Data is synthetic (see `data/generate_synthetic.py`) and contains no real custom
 - SteerCo dashboard: predicted vs. actual churn for the pilot region, and value captured vs. the $1.2M/yr target.
 - Unit tests and CI on every PR.
 
-## Repository layout (target)
+## Quick start
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+make install          # pip install -e ".[dev]"
+make data             # regenerate synthetic source extracts into data/raw/
+make train            # ingest + DQ gates -> features.parquet -> models/churn_propensity.joblib + model_card.json
+make test             # 21 tests: DQ gates, features, model acceptance, API, dashboard
+make api              # http://localhost:8000/docs   (/score/{customer_id}, /at-risk?region=North)
+make dashboard        # Streamlit SteerCo view
+```
+
+Held-out results on the synthetic book (see `models/model_card.json`): AUC 0.92 vs 0.76 for the
+rate-gap/expiry rule advisors use today; top-decile lift 7.9x; scores calibrated to the 2% base rate.
+At a 15% propensity threshold the model flags ~2% of customers as high-risk (~60 per pilot region),
+a worklist an advisor team can actually work.
+
+## Repository layout
 
 ```
 data/raw/            source-system extracts (input)
-data/processed/      governed feature table (generated)
-churn/               ingest, features, model, scoring, actions
-api/                 FastAPI scoring service
-dashboard/           SteerCo dashboard (Streamlit)
-models/              versioned model artefacts + metadata
-tests/               pytest
+data/generate_synthetic.py  deterministic generator (no real customer data)
+data/processed/      governed feature table (generated, git-ignored)
+churn/ingest.py      schema / duplicate-key / range / referential DQ gates
+churn/features.py    customer-level feature table (rate gap, expiry, digital & call signals)
+churn/model.py       train, evaluate vs naive baseline, acceptance gate, versioned model card
+churn/actions.py     driver attribution + next-best-action routing for advisors
+api/main.py          FastAPI scoring service (/health, /model, /score/{id}, /at-risk)
+dashboard/steerco.py Streamlit SteerCo dashboard (predicted vs actual, value vs $1.2M target)
+models/              model artefact (git-ignored) + model_card.json
+tests/               pytest; run in CI on every PR (.github/workflows/ci.yml)
 ```
